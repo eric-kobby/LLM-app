@@ -1,16 +1,6 @@
-import { Pressable, View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
-export default function Button({ label }) {
-  return (
-    <View style={styles.buttonContainer}>
-      <Pressable style={styles.button} onPress={() => alert('You pressed a button')}>
-        <Text style={styles.buttonLabel}>{label}</Text>
-      </Pressable>
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   buttonContainer: {
     width: 320,
     height: 68,
@@ -34,4 +24,4 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   }
-})
+});
