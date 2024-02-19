@@ -1,18 +1,33 @@
+import { ImageSourcePropType, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import ImageViewer from './components/ImageViewer';
 import Button from './components/Buttons/Button';
+import { useState } from 'react';
 
 const PlaceHolderImage = require('./assets/images/background-image.png');
 
 export default function App() {
+  const [selectedImage, setSelectedImage] = useState<ImageSourcePropType | null>(null);
+  const pickImage  = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1
+    });
+    if (result.canceled) return;
+    const [image] = result.assets;
+    setSelectedImage({
+      uri: image.uri
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImageViewer imageSource={PlaceHolderImage}/>
+        <ImageViewer placeHolderImageSource={PlaceHolderImage} selectedImage={selectedImage}/>
       </View>
       <View style={styles.footerContainer}>
-        <Button theme="primary" label="Choose a photo" />
+        <Button theme="primary" label="Choose a photo" onPress={pickImage} />
         <Button label="Use this photo" />
       </View>
       <StatusBar style="auto" />
