@@ -6,13 +6,17 @@ import Button from "./components/Buttons/Button";
 import { useState } from "react";
 import IconButton from "./components/Buttons/IconButton";
 import CircleButton from "./components/Buttons/CircleButton";
+import EmojiPicker from "./components/EmojiPicker";
+import EmojiList from "./components/EmojiList";
+import EmojiSticker from "./components/EmojiSticker";
 
 const PlaceHolderImage = require("./assets/images/background-image.png");
 
 export default function App() {
-  const [selectedImage, setSelectedImage] =
-    useState<ImageSourcePropType | null>(null);
+  const [selectedImage, setSelectedImage] = useState<ImageSourcePropType | null>(null);
   const [showAppOptions, setShowAppOptions] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pickedEmoji, setPickedEmoji] = useState<any>(null);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -32,11 +36,15 @@ export default function App() {
   };
 
   const onAddSticker = () => {
-    // we will implement this later
+    setIsModalVisible(true);
   };
 
   const onSaveImageAsync = async () => {
     // we will implement this later
+  };
+
+  const onModalClose = () => {
+    setIsModalVisible(false);
   };
 
   return (
@@ -46,15 +54,20 @@ export default function App() {
           placeHolderImageSource={PlaceHolderImage}
           selectedImage={selectedImage}
         />
+        {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
       </View>
       {showAppOptions ? (
         <View style={styles.optionsContainer}>
-        <View style={styles.optionsRow}>
-          <IconButton icon="refresh" label="Reset" onPress={onReset} />
-          <CircleButton onPress={onAddSticker} />
-          <IconButton icon="save-alt" label="Save" onPress={onSaveImageAsync} />
+          <View style={styles.optionsRow}>
+            <IconButton icon="refresh" label="Reset" onPress={onReset} />
+            <CircleButton onPress={onAddSticker} />
+            <IconButton
+              icon="save-alt"
+              label="Save"
+              onPress={onSaveImageAsync}
+            />
+          </View>
         </View>
-      </View>
       ) : (
         <View style={styles.footerContainer}>
           <Button theme="primary" label="Choose a photo" onPress={pickImage} />
@@ -64,6 +77,9 @@ export default function App() {
           />
         </View>
       )}
+      <EmojiPicker onClose={onModalClose} isVisible={isModalVisible}>
+        <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose}/>
+      </EmojiPicker>
       <StatusBar style="auto" />
     </View>
   );
@@ -83,12 +99,12 @@ const styles = StyleSheet.create({
     flex: 1 / 3,
     alignItems: "center",
   },
-   optionsContainer: {
-    position: 'absolute',
+  optionsContainer: {
+    position: "absolute",
     bottom: 80,
   },
   optionsRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
   },
 });
